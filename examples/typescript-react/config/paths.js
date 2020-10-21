@@ -1,16 +1,14 @@
-const path = require("path");
+const path = require('path');
 
-const resolve = (...pathList) => path.resolve(...pathList);
-
-const appDirectory = resolve(process.cwd());
+const appDirectory = path.resolve(process.cwd());
 
 module.exports = {
-	appEntry: appDirectory,
-	rootDir: resolve(appDirectory + "/src"),
-	rootFile: resolve(appDirectory + "/src/components/app.tsx"),
-	appHTML: resolve(appDirectory + "/public/index.html"),
-	outputDir: resolve(appDirectory + "/build"),
-	appPublic: resolve(appDirectory + "/public"),
-	extensions: [".ts", ".tsx", ".js"],
-	nodeModules: resolve(appDirectory + "/node_modules"),
+    appEntry: appDirectory,
+    rootDir: path.resolve(appDirectory + '/src'),
+    rootFile: path.resolve(appDirectory + '/src/index.tsx'),
+    appHTML: path.resolve(appDirectory + '/public/index.html'),
+    outputDir: path.resolve(appDirectory + '/build'),
+    appPublic: path.resolve(appDirectory + '/public'),
+    extensions: ['.ts', '.tsx', '.js'],
+    nodeModules: path.resolve(appDirectory + '/node_modules')
 };
