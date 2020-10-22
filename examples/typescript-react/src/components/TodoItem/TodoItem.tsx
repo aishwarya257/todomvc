@@ -1,147 +1,123 @@
-/*jshint quotmark: false */
-/*jshint white: false */
-/*jshint trailing: false */
-/*jshint newcap: false */
-/*global React */
-
-/// <reference path="../interfaces.d.ts"/>
-
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
 import Button from 'components/Button/Button';
-import Input from 'components/Input/Input';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import constants from '../../constants/keyCodes';
 
-export default function TodoItem({
-    todo,
-    editing,
-    onToggle,
-    onDestroy
-}: ITodoItemProps): JSX.Element {
+import Checkbox from 'components/Checkbox/Checkbox';
+import TodoItemContent from 'components/TodoItemContent/TodoItemContent';
+import EditingField from 'components/EditingField/EditingField';
+import useOutsideClick from 'src/hooks/useOutsideClick/useOutsideClick';
+import useEditingField from 'src/hooks/useEditingField/useEditingField';
+import useSlicedState from 'src/hooks/useSlicedState/useSlicedState';
+import task from 'src/constants/task';
+import {TodosConstants} from '../../hooks/useTodos/useTodos';
+import keyCodes from 'src/constants/keyCodes';
+
+const {REMOVE_TASK, TOGGLE_TASK, UPDATE_TASK} = TodosConstants;
+
+interface TodoItemProps {
+    key: string;
+    todo: ITodo;
+    updateTodoList: (task: {type: string; payload: ITodo}) => void;
+}
+export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Element {
+    const [editing, setEditing] = useState(false);
+    const [todoState, setTodoState] = useState(todo);
+    const {completed, title} = todoState;
+    const requiredKeys = useRef(task.editableFields);
+    const slicedState = useSlicedState(todoState, requiredKeys.current);
+    const [updateCommit, setUpdateCommit] = useState(false);
+    const {editFields, setEditFields, inputRefs, getValues} = useEditingField(slicedState);
+    const {ref, isComponentVisible, setIsComponentVisible, isEscape} = useOutsideClick(null);
+    const currentLiRef = useRef(null);
+    const onChange = ({target: {name, value}}) => {
+        setEditFields((editFields) => ({
+            ...editFields,
+            [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        setTodoState(todo);
+    }, [todo]);
+
+    useEffect(() => {
+        if (updateCommit) {
+            updateTodoList({type: UPDATE_TASK, payload: todoState});
+            setUpdateCommit(false);
+        }
+    }, [todoState, updateTodoList, updateCommit]);
+
+    useEffect(() => {
+        if (isEscape) {
+            setEditFields((state) => ({
+                ...state,
+                ...slicedState
+            }));
+        }
+    }, [isEscape, slicedState, setEditFields]);
+
+    const commitTask = useRef(() => {
+        setTodoState((state) => ({
+            ...state,
+            ...getValues()
+        }));
+        setUpdateCommit(true);
+    });
+
+    useEffect(() => {
+        if (isComponentVisible === false) {
+            if (!isEscape) {
+                commitTask?.current();
+            }
+            setEditing(false);
+        }
+    }, [isComponentVisible, isEscape]);
+
+    useEffect(() => {
+        if (editing) {
+            inputRefs.current[0]?.current.focus();
+            editing !== isComponentVisible && setIsComponentVisible(editing);
+        }
+    }, [editing, inputRefs, isComponentVisible, setIsComponentVisible]);
+
+    const onKeyDown = (e) => {
+        if (e.key === keyCodes.ENTER) {
+            commitTask?.current();
+        }
+    };
+
+    const onMouseDown = () => (ref.current = currentLiRef.current);
+
     return (
-        <li
-            className={classNames({
-                completed: todo.completed,
-                editing: editing
-            })}
-        >
-            <div className="view">
-                <Input
-                    className="toggle"
-                    type="checkbox"
-                    checked={todo.completed}
-                    onChange={onToggle}
+        !!title.length && (
+            <li
+                ref={currentLiRef}
+                className={classNames({
+                    completed,
+                    editing
+                })}
+                onMouseDown={onMouseDown}
+            >
+                <div className="view">
+                    <Checkbox
+                        className="toggle"
+                        checked={completed}
+                        label={<TodoItemContent {...todoState} />}
+                        onChange={() => updateTodoList({type: TOGGLE_TASK, payload: todoState})}
+                        labelProps={{onDoubleClick: () => setEditing(true)}}
+                    />
+                    <Button
+                        className="destroy"
+                        onClick={() => updateTodoList({type: REMOVE_TASK, payload: todoState})}
+                    />
+                </div>
+                <EditingField
+                    todoItem={editFields}
+                    ref={inputRefs}
+                    onKeyDown={onKeyDown}
+                    onChange={onChange}
                 />
-                <label onDoubleClick={(e) => this.handleEdit()}>{todo.title}</label>
-                <Button className="destroy" onClick={onDestroy} />
-            </div>
-            <Input
-                // ref="editField"
-                className="edit"
-                // value={this.state.editText}
-                // onBlur={(e) => this.handleSubmit(e)}
-                onChange={(e) => this.handleChange(e)}
-                onKeyDown={(e) => this.handleKeyDown(e)}
-            />
-        </li>
+            </li>
+        )
     );
 }
-
-// export default class TodoItem extends React.Component<ITodoItemProps, ITodoItemState> {
-//     public state: ITodoItemState;
-
-//     constructor(props: ITodoItemProps) {
-//         super(props);
-//         this.state = {editText: this.props.todo.title};
-//     }
-
-//     public handleSubmit(event: React.FormEvent) {
-//         var val = this.state.editText.trim();
-//         if (val) {
-//             this.props.onSave(val);
-//             this.setState({editText: val});
-//         } else {
-//             this.props.onDestroy();
-//         }
-//     }
-
-//     public handleEdit() {
-//         this.props.onEdit();
-//         this.setState({editText: this.props.todo.title});
-//     }
-
-//     public handleKeyDown(event: React.KeyboardEvent) {
-//         const {ENTER, ESCAPE} = constants;
-//         if (event.key === ESCAPE) {
-//             this.setState({editText: this.props.todo.title});
-//             this.props.onCancel(event);
-//         } else if (event.key === ENTER) {
-//             this.handleSubmit(event);
-//         }
-//     }
-
-//     public handleChange(event: React.FormEvent) {
-//         var input: any = event.target;
-//         this.setState({editText: input.value});
-//     }
-
-//     /**
-//      * This is a completely optional performance enhancement that you can
-//      * implement on any React component. If you were to delete this method
-//      * the app would still work correctly (and still be very performant!), we
-//      * just use it as an example of how little code it takes to get an order
-//      * of magnitude performance improvement.
-//      */
-//     public shouldComponentUpdate(nextProps: ITodoItemProps, nextState: ITodoItemState) {
-//         return (
-//             nextProps.todo !== this.props.todo ||
-//             nextProps.editing !== this.props.editing ||
-//             nextState.editText !== this.state.editText
-//         );
-//     }
-
-//     /**
-//      * Safely manipulate the DOM after updating the state when invoking
-//      * `this.props.onEdit()` in the `handleEdit` method above.
-//      * For more info refer to notes at https://facebook.github.io/react/docs/component-api.html#setstate
-//      * and https://facebook.github.io/react/docs/component-specs.html#updating-componentdidupdate
-//      */
-//     public componentDidUpdate(prevProps: ITodoItemProps) {
-//         if (!prevProps.editing && this.props.editing) {
-//             var node = ReactDOM.findDOMNode(this.refs['editField']) as HTMLInputElement;
-//             node.focus();
-//             node.setSelectionRange(node.value.length, node.value.length);
-//         }
-//     }
-
-//     public render() {
-//         return (
-//             <li
-//                 className={classNames({
-//                     completed: this.props.todo.completed,
-//                     editing: this.props.editing
-//                 })}
-//             >
-//                 <div className="view">
-//                     <Input
-//                         className="toggle"
-//                         type="checkbox"
-//                         checked={this.props.todo.completed}
-//                         onChange={this.props.onToggle}
-//                     />
-//                     <label onDoubleClick={(e) => this.handleEdit()}>{this.props.todo.title}</label>
-//                     <Button className="destroy" onClick={this.props.onDestroy} />
-//                 </div>
-//                 <Input
-//                     // ref="editField"
-//                     className="edit"
-//                     value={this.state.editText}
-//                     // onBlur={(e) => this.handleSubmit(e)}
-//                     onChange={(e) => this.handleChange(e)}
-//                     onKeyDown={(e) => this.handleKeyDown(e)}
-//                 />
-//             </li>
-//         );
-//     }
-// }
