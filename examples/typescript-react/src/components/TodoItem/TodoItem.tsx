@@ -6,7 +6,7 @@ import Button from 'components/Button/Button';
 import Checkbox from 'components/Checkbox/Checkbox';
 import TodoItemContent from 'components/TodoItemContent/TodoItemContent';
 import EditingField from 'components/EditingField/EditingField';
-import useOutsideClick from 'hooks/useOutsideClick/useOutsideClick';
+import useDocumentEvents from 'hooks/useDocumentEvents/useDocumentEvents';
 import useEditingField from 'hooks/useEditingField/useEditingField';
 import useSlicedState from 'hooks/useSlicedState/useSlicedState';
 import {TodosConstants} from '../../hooks/useTodos/useTodos';
@@ -32,7 +32,7 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
 
     const slicedState = useSlicedState(todoState, requiredKeys.current);
     const {editFields, setEditFields, inputRefs, getValues} = useEditingField(slicedState);
-    const {ref, isComponentVisible, setIsComponentVisible, isEscape} = useOutsideClick(null);
+    const {ref, setClickedInside, clickedInside, isEscape} = useDocumentEvents(null);
 
     const {completed, title} = todoState;
 
@@ -76,20 +76,20 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
     });
 
     useEffect(() => {
-        if (isComponentVisible === false) {
+        if (clickedInside === false) {
             if (!isEscape) {
                 commitTask?.current();
             }
             setEditing(false);
         }
-    }, [isComponentVisible, isEscape]);
+    }, [clickedInside, isEscape]);
 
     useEffect(() => {
         if (editing) {
             inputRefs.current[0]?.focus();
-            editing !== isComponentVisible && setIsComponentVisible(editing);
+            editing !== clickedInside && setClickedInside(editing);
         }
-    }, [editing, inputRefs, isComponentVisible, setIsComponentVisible]);
+    }, [editing, inputRefs, clickedInside, setClickedInside]);
 
     const onKeyDown = (e) => {
         if (e.key === keyCodes.ENTER) {

@@ -1,22 +1,22 @@
-import {useRef, useState, useEffect, Ref, Dispatch, SetStateAction} from 'react';
+import {useRef, useState, useEffect, Ref, Dispatch, SetStateAction, MutableRefObject} from 'react';
 import keyCodes from '../../constants/keyCodes';
 
-interface useOutsideClickProps {
-    ref: Ref<HTMLLIElement>;
-    isComponentVisible: boolean;
+interface useDocumentEventsProps {
+    ref: MutableRefObject<HTMLElement>;
+    clickedInside: boolean;
     isEscape: boolean;
-    setIsComponentVisible: Dispatch<SetStateAction<boolean>>;
+    setClickedInside: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function useOutsideClick(initialIsVisible: boolean): useOutsideClickProps {
-    const [isComponentVisible, setIsComponentVisible] = useState<boolean>(initialIsVisible);
+export default function useDocumentEvents(initialIsVisible = false): useDocumentEventsProps {
+    const [clickedInside, setClickedInside] = useState<boolean>(initialIsVisible);
     const [isEscape, setIsEscape] = useState<boolean>(false);
-    const ref = useRef<HTMLLIElement>(null);
+    const ref = useRef<HTMLElement | null>(null);
 
     const handleHideDropdown = (event: KeyboardEvent) => {
         if (event.key === keyCodes.ESCAPE) {
             setIsEscape(true);
-            setIsComponentVisible(false);
+            setClickedInside(false);
         } else {
             setIsEscape(false);
         }
@@ -24,7 +24,9 @@ export default function useOutsideClick(initialIsVisible: boolean): useOutsideCl
 
     const handleClickOutside = (event: MouseEvent) => {
         if (ref.current && !ref.current.contains(<HTMLElement>event.target)) {
-            setIsComponentVisible(false);
+            setClickedInside(false);
+        } else {
+            setClickedInside(true);
         }
     };
 
@@ -37,5 +39,5 @@ export default function useOutsideClick(initialIsVisible: boolean): useOutsideCl
         };
     });
 
-    return {ref, isComponentVisible, setIsComponentVisible, isEscape};
+    return {ref, clickedInside, setClickedInside, isEscape};
 }

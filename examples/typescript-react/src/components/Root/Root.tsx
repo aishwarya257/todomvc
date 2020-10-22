@@ -10,9 +10,8 @@ import Checkbox from 'components/Checkbox/Checkbox';
 
 import {getFilteredTodos} from './Root.Utils';
 import useTodos, {TodosConstants} from '../../hooks/useTodos/useTodos';
-import {ITodo} from 'src/interfaces';
 
-const {TOGGLE_ALL_COMPLETED, REMOVE_COMPLETED, ADD_TASK} = TodosConstants;
+const {TOGGLE_ALL_COMPLETED, REMOVE_COMPLETED} = TodosConstants;
 
 function Root(): JSX.Element {
     const [todos, setTodos] = useTodos();
@@ -32,7 +31,7 @@ function Root(): JSX.Element {
     /** Used composition for this reason, instead of other approaches : https://kentcdodds.com/blog/application-state-management-with-react */
     return (
         <div>
-            <TodoForm addTask={(description) => setTodos({type: ADD_TASK, payload: description})}>
+            <TodoForm taskDispatcher={setTodos}>
                 {length > 0 && (
                     <section className="main">
                         <Checkbox
