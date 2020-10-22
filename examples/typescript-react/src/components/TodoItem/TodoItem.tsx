@@ -1,16 +1,18 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import classNames from 'classnames';
-import Button from 'components/Button/Button';
+import {ITodo} from '../../interfaces';
 
+import Button from 'components/Button/Button';
 import Checkbox from 'components/Checkbox/Checkbox';
 import TodoItemContent from 'components/TodoItemContent/TodoItemContent';
 import EditingField from 'components/EditingField/EditingField';
-import useOutsideClick from 'src/hooks/useOutsideClick/useOutsideClick';
-import useEditingField from 'src/hooks/useEditingField/useEditingField';
-import useSlicedState from 'src/hooks/useSlicedState/useSlicedState';
-import task from 'src/constants/task';
+import useOutsideClick from 'hooks/useOutsideClick/useOutsideClick';
+import useEditingField from 'hooks/useEditingField/useEditingField';
+import useSlicedState from 'hooks/useSlicedState/useSlicedState';
 import {TodosConstants} from '../../hooks/useTodos/useTodos';
-import keyCodes from 'src/constants/keyCodes';
+
+import task from '../../constants/task';
+import keyCodes from '../../constants/keyCodes';
 
 const {REMOVE_TASK, TOGGLE_TASK, UPDATE_TASK} = TodosConstants;
 
@@ -19,17 +21,25 @@ interface TodoItemProps {
     todo: ITodo;
     updateTodoList: (task: {type: string; payload: ITodo}) => void;
 }
+
 export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Element {
-    const [editing, setEditing] = useState(false);
-    const [todoState, setTodoState] = useState(todo);
-    const {completed, title} = todoState;
+    const [editing, setEditing] = useState<boolean>(false);
+    const [todoState, setTodoState] = useState<ITodo>(todo);
+    const [updateCommit, setUpdateCommit] = useState<boolean>(false);
+
     const requiredKeys = useRef(task.editableFields);
+    const currentLiRef = useRef<HTMLLIElement>(null);
+
     const slicedState = useSlicedState(todoState, requiredKeys.current);
-    const [updateCommit, setUpdateCommit] = useState(false);
     const {editFields, setEditFields, inputRefs, getValues} = useEditingField(slicedState);
     const {ref, isComponentVisible, setIsComponentVisible, isEscape} = useOutsideClick(null);
-    const currentLiRef = useRef(null);
-    const onChange = ({target: {name, value}}) => {
+
+    const {completed, title} = todoState;
+
+    const onChange = (e) => {
+        const {
+            target: {name, value}
+        } = e;
         setEditFields((editFields) => ({
             ...editFields,
             [name]: value
@@ -62,6 +72,7 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
             ...getValues()
         }));
         setUpdateCommit(true);
+        setEditing(false);
     });
 
     useEffect(() => {
@@ -75,7 +86,7 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
 
     useEffect(() => {
         if (editing) {
-            inputRefs.current[0]?.current.focus();
+            inputRefs.current[0]?.focus();
             editing !== isComponentVisible && setIsComponentVisible(editing);
         }
     }, [editing, inputRefs, isComponentVisible, setIsComponentVisible]);

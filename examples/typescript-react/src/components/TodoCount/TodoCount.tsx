@@ -1,11 +1,11 @@
 import React from 'react';
-import {Utils} from '../utils';
+import common from '../../utils/common';
 
 interface TodoCount {
     count: number;
 }
 function TodoCount({count}: TodoCount): JSX.Element {
-    const activeTodoWord = Utils.pluralize(count, 'item');
+    const activeTodoWord = common.pluralize(count, 'item');
     return (
         <span className="todo-count">
             <strong>{count}</strong> {activeTodoWord + ' left'}

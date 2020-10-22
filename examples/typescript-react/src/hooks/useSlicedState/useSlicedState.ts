@@ -1,9 +1,12 @@
+import {ITodo, Keys} from './../../interfaces';
 import {useState, useEffect} from 'react';
+type useSlicedStateProps = {[key in Keys]: string | Array<string>};
 
-export default function useSlicedState(state, requiredKeys) {
-    const [slicedState, setSlicedState] = useState({});
+export default function useSlicedState(state: ITodo, requiredKeys: Keys[]): useSlicedStateProps {
+    const [slicedState, setSlicedState] = useState<useSlicedStateProps>({});
     useEffect(() => {
-        const sliced = Object.keys(state).reduce((subState, key) => {
+        const keys = Object.keys(state);
+        const sliced = keys.reduce((subState, key) => {
             if (requiredKeys.includes(key)) {
                 return {
                     ...subState,

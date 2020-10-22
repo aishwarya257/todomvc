@@ -1,3 +1,4 @@
+import common from 'utils/common';
 import taskConstants from '../../constants/task';
 export const separateBadgesAndTask = (
     task: string
@@ -10,15 +11,12 @@ export const separateBadgesAndTask = (
     if (!title.length) {
         return null;
     }
+    const values = splitted.slice(1).reduce((filtered, badge) => {
+        const text = badge.trim();
+        return text.length ? [...filtered, text] : filtered;
+    }, []);
     return {
         title,
-        badges: Array.from(
-            new Set(
-                splitted.slice(1).reduce((filtered, badge) => {
-                    const text = badge.trim();
-                    return text.length ? [...filtered, badge] : filtered;
-                }, [])
-            )
-        )
+        badges: common.removeDuplicates(values)
     };
 };

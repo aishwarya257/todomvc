@@ -3,19 +3,19 @@ import Input from 'components/Input/Input';
 import Header from 'components/Header/Header';
 import keyCodes from '../../constants/keyCodes';
 import {separateBadgesAndTask} from './TodoForm.utils';
+import {CommonProps} from 'src/interfaces';
 
 interface task {
     title: string;
     badges: Array<string>;
 }
 
-interface TodoFormProps {
-    children?: JSX.Element[] | JSX.Element;
+interface TodoFormProps extends CommonProps {
     addTask: (task: task) => void;
 }
 
 function TodoForm({children, addTask}: TodoFormProps): JSX.Element {
-    const [task, setTask] = useState('');
+    const [task, setTask] = useState<string>('');
     const onChange = ({target}: React.ChangeEvent) => setTask((target as HTMLInputElement).value);
     const onKeydown = ({key}: React.KeyboardEvent) => {
         const text = task.trim();

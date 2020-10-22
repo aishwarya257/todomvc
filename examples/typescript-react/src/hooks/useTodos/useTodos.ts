@@ -1,6 +1,7 @@
-import {useEffect, useReducer} from 'react';
+import {useEffect, useReducer, Dispatch, SetStateAction} from 'react';
 import useLocalStorage from '../useLocalStorage/useLocalStorage';
 import {getUniqueId} from './useTodos.utils';
+import {ITodo} from '../../interfaces';
 
 const ADD_TASK = 'ADD_TASK';
 const REMOVE_TASK = 'REMOVE_TASK';
@@ -59,7 +60,7 @@ const todosReducer = (todos, {type, payload}: actionProps) => {
             return todos;
     }
 };
-export default function useTodos(): [Array<ITodo>, React.Dispatch<any>] {
+export default function useTodos(): [Array<ITodo>, Dispatch<SetStateAction<ITodo[]>>] {
     const [item, setItem] = useLocalStorage('react-todos');
     const [todos, todosDispatcher] = useReducer(todosReducer, (item && JSON.parse(item)) || []);
     useEffect(() => {

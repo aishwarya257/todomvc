@@ -1,5 +1,8 @@
 import React from 'react';
+import {CommonProps} from 'src/interfaces';
 
-const Header: React.FC = ({children}) => <h1>{children}</h1>;
+function Header({children}: CommonProps): JSX.Element {
+    return <h1>{children}</h1>;
+}
 
 export default Header;

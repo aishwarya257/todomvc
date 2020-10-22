@@ -1,8 +1,11 @@
-import React from 'react';
-import Badge from '../Badge/Badge';
+import React, {ReactNode} from 'react';
 
-function Badges({children}) {
-    return children;
+interface BadgesProps {
+    children: ReactNode;
+}
+
+function Badges({children}: BadgesProps): JSX.Element {
+    return <>{children}</>;
 }
 
 export default Badges;

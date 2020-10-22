@@ -1,10 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import {useLocation, Link} from 'react-router-dom';
-interface FilterItemProps {
+import {CommonProps} from 'src/interfaces';
+
+interface FilterItemProps extends CommonProps {
     status: string;
-    children: string | JSX.Element | JSX.Element[];
 }
+
 function FilterItem({status, children, ...otherProps}: FilterItemProps): JSX.Element {
     const {pathname} = useLocation();
     return (

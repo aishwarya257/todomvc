@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {LabelHTMLAttributes} from 'react';
+import {CommonProps} from 'src/interfaces';
 
-interface LabelProps {
-    children: JSX.Element[] | JSX.Element | string;
-    htmlFor: string;
-}
-const Label: React.FC<LabelProps> = ({children, ...otherProps}) => {
+interface LabelProps extends CommonProps, Omit<LabelHTMLAttributes<HTMLLabelElement>, 'children'> {}
+
+function Label({children, ...otherProps}: LabelProps): JSX.Element {
     return <label {...otherProps}>{children}</label>;
-};
+}
 
 export default Label;

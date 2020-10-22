@@ -1,27 +1,19 @@
-import {useState, useRef, useEffect, createRef, useCallback} from 'react';
+import {useState, useRef, useEffect} from 'react';
+import common from 'utils/common';
 import taskConstants from '../../constants/task';
 
 function useEditingField(todo) {
-    const [editFields, setEditFields] = useState({});
-    const keys = Object.keys(todo);
-    const inputRefs = useRef([]);
-
-    if (inputRefs.current.length !== keys.length) {
-        inputRefs.current = Array(keys.length)
-            .fill(null)
-            .map((_, i) => inputRefs.current[i] || createRef());
-    }
-    
+    const [editFields, setEditFields] = useState(todo);
+    const inputRefs = useRef<Array<HTMLInputElement>>([]);
     const getValues = useRef(() =>
         inputRefs.current.reduce((values, item) => {
-            const current = item?.current;
-            const objectVal = current?.value;
-            const key = current?.name;
-            const separator = taskConstants.editDelimiter[key];
-            if (current) {
+            if (item) {
+                const value = item?.value;
+                const key = item?.name;
+                const separator = taskConstants.editDelimiter[key];
                 return {
                     ...values,
-                    [key]: key === 'title' ? objectVal : objectVal.split(separator)
+                    [key]: key === 'title' ? value : common.removeDuplicates(value.split(separator))
                 };
             }
             return values;

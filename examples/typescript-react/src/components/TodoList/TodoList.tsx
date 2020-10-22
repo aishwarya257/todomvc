@@ -1,10 +1,7 @@
 import React from 'react';
+import {CommonProps} from 'src/interfaces';
 
-interface TodoListProps {
-    children: JSX.Element | JSX.Element[];
-}
-
-function TodoList({children}: TodoListProps): JSX.Element {
+function TodoList({children}: CommonProps): JSX.Element {
     return <ul className="todo-list">{children}</ul>;
 }
 

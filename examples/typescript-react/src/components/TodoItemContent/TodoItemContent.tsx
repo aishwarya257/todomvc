@@ -2,13 +2,25 @@ import React from 'react';
 import Badges from 'components/Badges/Badges';
 import Badge from 'components/Badge/Badge';
 
-function TodoItemContent({title, badges}) {
+interface TodoItemContentProps {
+    title: string | JSX.Element | JSX.Element[];
+    badges: Array<string>;
+}
+
+function TodoItemContent({title, badges}: TodoItemContentProps): JSX.Element {
     return (
         <>
             <span> {title} </span>
             {badges ? (
                 <Badges>
-                    {badges.map((value) => !!value.length && <Badge key={value}> {value}</Badge>)}
+                    {badges.map(
+                        (value) =>
+                            !!value.length && (
+                                <Badge key={value} title={value}>
+                                    {value}
+                                </Badge>
+                            )
+                    )}
                 </Badges>
             ) : null}
         </>

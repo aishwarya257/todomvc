@@ -1,4 +1,5 @@
 import todoStatus from '../../constants/status';
+import {ITodo} from '../../interfaces';
 
 const {COMPLETED, ACTIVE} = todoStatus;
 

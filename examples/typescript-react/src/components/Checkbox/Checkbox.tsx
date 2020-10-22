@@ -1,10 +1,12 @@
-import React from 'react';
-import Input, {InputProps} from '../Input/Input';
+import React, {InputHTMLAttributes} from 'react';
+import Input from '../Input/Input';
 import Label from '../Label/Label';
 
-interface CheckboxProps extends InputProps {
-    label: string | JSX.Element | JSX.Element[];
-    labelProps?: any;
+interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+    label: JSX.Element[] | JSX.Element | string;
+    labelProps?: {
+        onDoubleClick: () => void;
+    };
 }
 
 function Checkbox({

@@ -1,11 +1,18 @@
-import {useRef, useState, useEffect} from 'react';
+import {useRef, useState, useEffect, Ref, Dispatch, SetStateAction} from 'react';
 import keyCodes from '../../constants/keyCodes';
 
-export default function useOutsideClick(initialIsVisible) {
-    const [isComponentVisible, setIsComponentVisible] = useState(initialIsVisible);
-    const [isEscape, setIsEscape] = useState(false);
-    const ref = useRef(null);
-    console.log(ref);
+interface useOutsideClickProps {
+    ref: Ref<HTMLLIElement>;
+    isComponentVisible: boolean;
+    isEscape: boolean;
+    setIsComponentVisible: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function useOutsideClick(initialIsVisible: boolean): useOutsideClickProps {
+    const [isComponentVisible, setIsComponentVisible] = useState<boolean>(initialIsVisible);
+    const [isEscape, setIsEscape] = useState<boolean>(false);
+    const ref = useRef<HTMLLIElement>(null);
+
     const handleHideDropdown = (event: KeyboardEvent) => {
         if (event.key === keyCodes.ESCAPE) {
             setIsEscape(true);
@@ -15,18 +22,18 @@ export default function useOutsideClick(initialIsVisible) {
         }
     };
 
-    const handleClickOutside = (event) => {
-        if (ref.current && !ref?.current?.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+        if (ref.current && !ref.current.contains(<HTMLElement>event.target)) {
             setIsComponentVisible(false);
         }
     };
 
     useEffect(() => {
         document.addEventListener('keydown', handleHideDropdown, true);
-        document.addEventListener('click', handleClickOutside, true);
+        document.addEventListener('mousedown', handleClickOutside, true);
         return () => {
             document.removeEventListener('keydown', handleHideDropdown, true);
-            document.removeEventListener('click', handleClickOutside, true);
+            document.removeEventListener('mousedown', handleClickOutside, true);
         };
     });
 

@@ -10,6 +10,7 @@ import Checkbox from 'components/Checkbox/Checkbox';
 
 import {getFilteredTodos} from './Root.Utils';
 import useTodos, {TodosConstants} from '../../hooks/useTodos/useTodos';
+import {ITodo} from 'src/interfaces';
 
 const {TOGGLE_ALL_COMPLETED, REMOVE_COMPLETED, ADD_TASK} = TodosConstants;
 
@@ -17,7 +18,7 @@ function Root(): JSX.Element {
     const [todos, setTodos] = useTodos();
     const {pathname} = useLocation();
     const filtered = getFilteredTodos(pathname.slice(1), todos);
-    const [activeCount, setActiveCount] = useState(0);
+    const [activeCount, setActiveCount] = useState<number>(0);
     const length = todos.length;
     useEffect(() => {
         setActiveCount(todos.reduce((sum, {completed}) => (completed ? sum : sum + 1), 0));
