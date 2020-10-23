@@ -3,39 +3,41 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const {TsconfigPathsPlugin} = require('tsconfig-paths-webpack-plugin');
 
 const {rootFile, outputDir, extensions, appHTML} = require('./paths.js');
-module.exports = {
-    entry: rootFile,
-    devtool: 'inline-source-map',
-    mode: 'development',
-    output: {
-        path: outputDir,
-        filename: '[name].js'
-    },
-    resolve: {
-        extensions,
-        plugins: [new TsconfigPathsPlugin()]
-    },
+module.exports = (env) => {
+    return {
+        entry: rootFile,
+        devtool: 'inline-source-map',
+        mode: env,
+        output: {
+            path: outputDir,
+            filename: '[name].js'
+        },
+        resolve: {
+            extensions,
+            plugins: [new TsconfigPathsPlugin()]
+        },
 
-    module: {
-        rules: [
-            {
-                test: /\.tsx?$/,
-                loader: 'ts-loader',
-                options: {
-                    transpileOnly: true
+        module: {
+            rules: [
+                {
+                    test: /\.tsx?$/,
+                    loader: 'ts-loader',
+                    options: {
+                        transpileOnly: true
+                    },
+                    exclude: /build/
                 },
-                exclude: /build/
-            },
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-            }
+                {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader']
+                }
+            ]
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                template: appHTML
+            }),
+            new ForkTsCheckerWebpackPlugin({})
         ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: appHTML
-        }),
-        new ForkTsCheckerWebpackPlugin({})
-    ]
+    };
 };
