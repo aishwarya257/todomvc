@@ -1,15 +1,7 @@
 import {Keys} from '../interfaces';
-type taskConstantsProps = {
-    editableFields: (string | Keys)[];
-    displayDelimiter: {badges: string};
-    editDelimiter: {
-        badges: string;
-    };
-    labels: {title: string; badges: string};
-};
 
-const taskConstants: taskConstantsProps = {
-    editableFields: Object.values(Keys),
+const taskConstants = {
+    editableFields: ['title', 'badges'],
     displayDelimiter: {
         badges: '@'
     },
@@ -18,5 +10,7 @@ const taskConstants: taskConstantsProps = {
     },
     labels: {title: 'To-do', badges: 'Tags'}
 };
+
+type myType = typeof taskConstants;
 
 export default taskConstants;

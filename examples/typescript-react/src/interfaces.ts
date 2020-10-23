@@ -6,8 +6,8 @@ export interface ITodo {
 }
 
 export enum Keys {
-    badges,
-    title
+    badges = 'badges',
+    title = 'title'
 }
 
 export interface CommonProps {

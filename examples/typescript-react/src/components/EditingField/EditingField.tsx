@@ -1,7 +1,9 @@
-import React, {KeyboardEvent, forwardRef, FormEvent, Ref} from 'react';
+import React, {KeyboardEvent, forwardRef, FormEvent} from 'react';
 import {ITodo} from '../../interfaces';
 import Input from 'components/Input/Input';
 import task from '../../constants/task';
+import taskConstants from '../../constants/task';
+import {getString, mergeValues} from './EditingField.Utils';
 
 interface EditingFieldProps {
     todoItem: ITodo;
@@ -12,8 +14,16 @@ interface EditingFieldProps {
 const EditingField = forwardRef<Array<HTMLInputElement>, EditingFieldProps>(
     ({todoItem, onKeyDown, onChange}, inputRefs) => {
         const {labels} = task;
+        const badges = todoItem.badges;
+        const values =
+            typeof badges === 'string'
+                ? getString(badges)
+                : mergeValues(badges, taskConstants.displayDelimiter.badges);
         return (
             <div className="edit" tabIndex={0}>
+                <span>
+                    {todoItem.title} {values || ''}{' '}
+                </span>
                 {Object.keys(todoItem).map((key, index) => {
                     const value = todoItem[key];
                     return (
@@ -24,6 +34,7 @@ const EditingField = forwardRef<Array<HTMLInputElement>, EditingFieldProps>(
                                 onChange={onChange}
                                 onKeyDown={onKeyDown}
                                 value={value}
+                                // @ts-ignore: Unreachable code error - Needs Attention
                                 ref={(ref) => (inputRefs.current[index] = ref)}
                             />
                         </div>

@@ -3,28 +3,24 @@ import Input from 'components/Input/Input';
 import Header from 'components/Header/Header';
 import keyCodes from '../../constants/keyCodes';
 import {separateBadgesAndTask} from './TodoForm.utils';
-import {CommonProps, ITodo} from 'src/interfaces';
+import {CommonProps} from 'src/interfaces';
 import useDocumentEvents from 'hooks/useDocumentEvents/useDocumentEvents';
-import {TodosConstants, actionProps} from '../../hooks/useTodos/useTodos';
-interface task {
-    title: string;
-    badges: Array<string>;
-}
+import {TodosConstants, ActionsWithPayload} from '../../hooks/useTodos/useTodos';
 
 interface TodoFormProps extends CommonProps {
-    taskDispatcher: Dispatch<SetStateAction<actionProps>>;
+    taskDispatcher: Dispatch<SetStateAction<ActionsWithPayload>>;
 }
 
 function TodoForm({children, taskDispatcher}: TodoFormProps): JSX.Element {
     const [task, setTask] = useState<string>('');
+
     const onChange = ({target}: React.ChangeEvent) => {
         setTask((target as HTMLInputElement).value);
     };
-    const {clickedInside, ref} = useDocumentEvents(null);
-    const inputRef = useRef<HTMLInputElement>(null);
-    const [commit, setCommit] = useState(false);
 
-    const commitTask = useCallback(() => {
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const commitTask = () => {
         const text = task.trim();
         if (text.length) {
             const processedText = separateBadgesAndTask(text);
@@ -33,25 +29,13 @@ function TodoForm({children, taskDispatcher}: TodoFormProps): JSX.Element {
                 setTask('');
             }
         }
-        setCommit(false);
-    }, [task, taskDispatcher]);
+    };
 
-    useEffect(() => {
-        if (clickedInside === false) {
-            setCommit(true);
-        }
-    }, [clickedInside, setCommit]);
-
-    useEffect(() => {
-        if (commit) {
-            commitTask();
-        }
-    }, [commit, commitTask]);
+    useDocumentEvents(inputRef, commitTask);
 
     const onKeydown = ({key}: React.KeyboardEvent) => {
-        ref.current = inputRef.current;
         if (key === keyCodes.ENTER) {
-            setCommit(true);
+            commitTask();
         }
     };
 

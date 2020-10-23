@@ -1,8 +1,7 @@
 import common from 'utils/common';
 import taskConstants from '../../constants/task';
-export const separateBadgesAndTask = (
-    task: string
-): null | {title: string; badges: Array<string>} => {
+import {AddType} from '../../hooks/useTodos/useTodos';
+export const separateBadgesAndTask = (task: string): AddType => {
     if (!task) {
         return null;
     }

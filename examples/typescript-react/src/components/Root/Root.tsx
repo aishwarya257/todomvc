@@ -9,22 +9,24 @@ import Button from '../Button/Button';
 import Checkbox from 'components/Checkbox/Checkbox';
 
 import {getFilteredTodos} from './Root.Utils';
-import useTodos, {TodosConstants} from '../../hooks/useTodos/useTodos';
+import useTodos, {ActionsWithPayload, TodosConstants} from '../../hooks/useTodos/useTodos';
+import {ITodo} from 'src/interfaces';
 
 const {TOGGLE_ALL_COMPLETED, REMOVE_COMPLETED} = TodosConstants;
 
 function Root(): JSX.Element {
     const [todos, setTodos] = useTodos();
     const {pathname} = useLocation();
-    const filtered = getFilteredTodos(pathname.slice(1), todos);
+    const filtered: ITodo[] = getFilteredTodos(pathname.slice(1), todos);
     const [activeCount, setActiveCount] = useState<number>(0);
     const length = todos.length;
     useEffect(() => {
         setActiveCount(todos.reduce((sum, {completed}) => (completed ? sum : sum + 1), 0));
     }, [todos]);
 
-    const updateTodoList = ({type, payload}) => {
+    const updateTodoList = ({type, payload}: ActionsWithPayload) => {
         if (type && payload) {
+            // @ts-ignore: Unreachable code error
             setTodos({type, payload});
         }
     };

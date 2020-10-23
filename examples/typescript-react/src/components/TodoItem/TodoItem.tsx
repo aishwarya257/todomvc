@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import classNames from 'classnames';
 import {ITodo} from '../../interfaces';
 
@@ -9,7 +9,8 @@ import EditingField from 'components/EditingField/EditingField';
 import useDocumentEvents from 'hooks/useDocumentEvents/useDocumentEvents';
 import useEditingField from 'hooks/useEditingField/useEditingField';
 import useSlicedState from 'hooks/useSlicedState/useSlicedState';
-import {TodosConstants} from '../../hooks/useTodos/useTodos';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import {TodoActions, TodosConstants} from '../../hooks/useTodos/useTodos';
 
 import task from '../../constants/task';
 import keyCodes from '../../constants/keyCodes';
@@ -19,7 +20,7 @@ const {REMOVE_TASK, TOGGLE_TASK, UPDATE_TASK} = TodosConstants;
 interface TodoItemProps {
     key: string;
     todo: ITodo;
-    updateTodoList: (task: {type: string; payload: ITodo}) => void;
+    updateTodoList: (task: TodoActions) => void;
 }
 
 export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Element {
@@ -32,7 +33,18 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
 
     const slicedState = useSlicedState(todoState, requiredKeys.current);
     const {editFields, setEditFields, inputRefs, getValues} = useEditingField(slicedState);
-    const {ref, setClickedInside, clickedInside, isEscape} = useDocumentEvents(null);
+
+    const commitTask = useCallback(() => {
+        if (editing) {
+            setTodoState((state) => ({
+                ...state,
+                ...getValues()
+            }));
+            setEditing(false);
+        }
+    }, [editing, getValues]);
+
+    useDocumentEvents(currentLiRef, commitTask);
 
     const {completed, title} = todoState;
 
@@ -50,6 +62,10 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
         setTodoState(todo);
     }, [todo]);
 
+    useDeepCompareEffect(() => {
+        setUpdateCommit(true);
+    }, [todoState]);
+
     useEffect(() => {
         if (updateCommit) {
             updateTodoList({type: UPDATE_TASK, payload: todoState});
@@ -58,46 +74,23 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
     }, [todoState, updateTodoList, updateCommit]);
 
     useEffect(() => {
-        if (isEscape) {
+        if (editing) {
+            inputRefs.current[0]?.focus();
+        }
+    }, [editing, inputRefs]);
+
+    const onKeyDown = (e) => {
+        if (e.key === keyCodes.ENTER) {
+            commitTask();
+        } else if (e.key === keyCodes.ESCAPE) {
+            setTodoState(todo);
+            setEditing(false);
             setEditFields((state) => ({
                 ...state,
                 ...slicedState
             }));
         }
-    }, [isEscape, slicedState, setEditFields]);
-
-    const commitTask = useRef(() => {
-        setTodoState((state) => ({
-            ...state,
-            ...getValues()
-        }));
-        setUpdateCommit(true);
-        setEditing(false);
-    });
-
-    useEffect(() => {
-        if (clickedInside === false) {
-            if (!isEscape) {
-                commitTask?.current();
-            }
-            setEditing(false);
-        }
-    }, [clickedInside, isEscape]);
-
-    useEffect(() => {
-        if (editing) {
-            inputRefs.current[0]?.focus();
-            editing !== clickedInside && setClickedInside(editing);
-        }
-    }, [editing, inputRefs, clickedInside, setClickedInside]);
-
-    const onKeyDown = (e) => {
-        if (e.key === keyCodes.ENTER) {
-            commitTask?.current();
-        }
     };
-
-    const onMouseDown = () => (ref.current = currentLiRef.current);
 
     return (
         !!title.length && (
@@ -107,7 +100,7 @@ export default function TodoItem({todo, updateTodoList}: TodoItemProps): JSX.Ele
                     completed,
                     editing
                 })}
-                onMouseDown={onMouseDown}
+                onKeyDown={onKeyDown}
             >
                 <div className="view">
                     <Checkbox

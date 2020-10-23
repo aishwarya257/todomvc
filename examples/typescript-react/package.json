@@ -13,7 +13,8 @@
     "react-dom": "^16.14.0",
     "react-router-dom": "^5.2.0",
     "todomvc-app-css": "^2.3.0",
-    "todomvc-common": "^1.0.1"
+    "todomvc-common": "^1.0.1",
+    "use-deep-compare-effect": "^1.4.0"
   },
   "devDependencies": {
     "@types/webpack": "^4.41.23",

@@ -6,7 +6,7 @@ const common = {
         return count === 1 ? word : word + 's';
     },
     removeDuplicates(array: Array<string>): Array<string> {
-        if (!array) {
+        if (!array || !array.length) {
             return [];
         }
         return Array.from(new Set(array));

@@ -1,43 +1,31 @@
-import {useRef, useState, useEffect, Ref, Dispatch, SetStateAction, MutableRefObject} from 'react';
-import keyCodes from '../../constants/keyCodes';
+import {RefObject, useEffect, useRef} from 'react';
 
-interface useDocumentEventsProps {
-    ref: MutableRefObject<HTMLElement>;
-    clickedInside: boolean;
-    isEscape: boolean;
-    setClickedInside: Dispatch<SetStateAction<boolean>>;
-}
+type ListenerEvent = MouseEvent & {
+    target: Element;
+};
 
-export default function useDocumentEvents(initialIsVisible = false): useDocumentEventsProps {
-    const [clickedInside, setClickedInside] = useState<boolean>(initialIsVisible);
-    const [isEscape, setIsEscape] = useState<boolean>(false);
-    const ref = useRef<HTMLElement | null>(null);
-
-    const handleHideDropdown = (event: KeyboardEvent) => {
-        if (event.key === keyCodes.ESCAPE) {
-            setIsEscape(true);
-            setClickedInside(false);
-        } else {
-            setIsEscape(false);
-        }
-    };
-
-    const handleClickOutside = (event: MouseEvent) => {
-        if (ref.current && !ref.current.contains(<HTMLElement>event.target)) {
-            setClickedInside(false);
-        } else {
-            setClickedInside(true);
-        }
-    };
-
+const useDocumentEvents = (
+    ref: RefObject<HTMLElement>,
+    callback: (event: MouseEvent) => void,
+    eventType = 'click'
+): void => {
+    const handlerRef = useRef(callback);
     useEffect(() => {
-        document.addEventListener('keydown', handleHideDropdown, true);
-        document.addEventListener('mousedown', handleClickOutside, true);
-        return () => {
-            document.removeEventListener('keydown', handleHideDropdown, true);
-            document.removeEventListener('mousedown', handleClickOutside, true);
-        };
+        handlerRef.current = callback;
     });
 
-    return {ref, clickedInside, setClickedInside, isEscape};
-}
+    useEffect(() => {
+        const listener = (event: ListenerEvent) => {
+            if (ref && ref.current && !ref.current.contains(event.target)) {
+                handlerRef.current(event);
+            }
+        };
+
+        document.addEventListener(eventType, listener);
+        return () => {
+            document.removeEventListener(eventType, listener);
+        };
+    });
+};
+
+export default useDocumentEvents;
