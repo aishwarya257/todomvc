@@ -75,8 +75,8 @@ export default function TodoItem({todo, setTodos}: TodoItemProps): JSX.Element |
     }, [todo]);
 
     useDeepCompareEffect(() => {
-        updateTodoList({type: UPDATE_TASK, payload: todoState}), [todoState];
-    });
+        updateTodoList({type: UPDATE_TASK, payload: todoState});
+    }, [todoState]);
 
     useEffect(() => {
         if (editing) {
