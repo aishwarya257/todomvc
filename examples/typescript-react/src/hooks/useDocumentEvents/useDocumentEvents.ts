@@ -1,13 +1,9 @@
-import {RefObject, useEffect, useRef} from 'react';
-
-type ListenerEvent = MouseEvent & {
-    target: Element;
-};
+import {RefObject, useEffect, useRef, MouseEvent} from 'react';
 
 const useDocumentEvents = (
     ref: RefObject<HTMLElement>,
-    callback: (event: MouseEvent) => void,
-    eventType = 'click'
+    callback: (event: Event) => void,
+    eventType: keyof DocumentEventMap = 'click'
 ): void => {
     const handlerRef = useRef(callback);
     useEffect(() => {
@@ -15,16 +11,14 @@ const useDocumentEvents = (
     });
 
     useEffect(() => {
-        const listener = (event: ListenerEvent) => {
-            if (ref && ref.current && !ref.current.contains(event.target)) {
-                handlerRef.current(event);
+        const listener = (ev: Event) => {
+            if (ref && ref.current && !ref.current.contains(ev.target as Element)) {
+                handlerRef.current(ev);
             }
         };
 
         document.addEventListener(eventType, listener);
-        return () => {
-            document.removeEventListener(eventType, listener);
-        };
+        return () => document.removeEventListener(eventType, listener);
     });
 };
 

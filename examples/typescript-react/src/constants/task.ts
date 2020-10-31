@@ -1,16 +1,21 @@
 import {Keys} from '../interfaces';
+type LabelsType = {[key in Keys]: string};
+type SpecialCharacterType = {[key in Keys]?: string};
 
-const taskConstants = {
-    editableFields: ['title', 'badges'],
+const taskConstants: {
+    labels: LabelsType;
+    editableFields: Keys[];
+    displayDelimiter: SpecialCharacterType;
+    editDelimiter: SpecialCharacterType;
+} = {
+    editableFields: [Keys.title, Keys.badges],
     displayDelimiter: {
-        badges: '@'
+        [Keys.badges]: '@'
     },
     editDelimiter: {
-        badges: ','
+        [Keys.badges]: ','
     },
-    labels: {title: 'To-do', badges: 'Tags'}
+    labels: {[Keys.title]: 'To-do', [Keys.badges]: 'Tags'}
 };
-
-type myType = typeof taskConstants;
 
 export default taskConstants;

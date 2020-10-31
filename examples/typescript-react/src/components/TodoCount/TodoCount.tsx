@@ -8,7 +8,8 @@ function TodoCount({count}: TodoCount): JSX.Element {
     const activeTodoWord = common.pluralize(count, 'item');
     return (
         <span className="todo-count">
-            <strong>{count}</strong> {activeTodoWord + ' left'}
+            <strong>{count}</strong>
+            {activeTodoWord + ' left'}
         </span>
     );
 }

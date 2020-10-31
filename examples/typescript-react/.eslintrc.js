@@ -1,14 +1,25 @@
 /** Added as a js file so that developers can add comments for the need */
 module.exports = {
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint', 'react', 'react-hooks', 'eslint-plugin-import', 'prettier'],
+    plugins: [
+        '@typescript-eslint',
+        'react',
+        'react-hooks',
+        'eslint-plugin-import',
+        'prettier',
+        'testing-library',
+        'jest-dom'
+    ],
     env: {
         browser: true
     },
     extends: [
         'plugin:@typescript-eslint/recommended',
         'plugin:react/recommended',
-        'plugin:prettier/recommended'
+        'plugin:prettier/recommended',
+        'plugin:testing-library/recommended',
+        'plugin:testing-library/react',
+        'plugin:jest-dom/recommended'
     ],
     parserOptions: {
         project: ['tsconfig.json'],

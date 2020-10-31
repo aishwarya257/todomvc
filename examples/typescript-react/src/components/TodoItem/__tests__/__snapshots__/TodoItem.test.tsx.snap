@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test TodoItem  component Snapshot test 1`] = `
+<li
+  class=""
+>
+  <div
+    class="view"
+  >
+    <input
+      class="toggle"
+      type="checkbox"
+    />
+    <label>
+      <span>
+         
+        Watch movies
+         
+      </span>
+      <span
+        class="badge"
+        title="netflix"
+      >
+        netflix
+      </span>
+      <span
+        class="badge"
+        title="amazon"
+      >
+        amazon
+      </span>
+    </label>
+    <button
+      aria-label="remove"
+      class="destroy"
+    >
+       
+       
+    </button>
+  </div>
+</li>
+`;

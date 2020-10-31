@@ -5,8 +5,8 @@ export default function useLocalStorage(
     initialValue = ''
 ): [string, (item: string) => void] {
     const [item, setValue] = useState(() => {
-        const value = localStorage.getItem(key) || initialValue;
-        localStorage.setItem(key, value);
+        const value = window.localStorage.getItem(key) || initialValue;
+        window.localStorage.setItem(key, value);
         return value;
     });
     const setItem = (item: string) => {

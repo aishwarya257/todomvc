@@ -1,8 +1,8 @@
 export interface ITodo {
     id: string;
-    title: string;
     completed: boolean;
-    badges: Array<string>;
+    [Keys.title]: string;
+    [Keys.badges]: Array<string>;
 }
 
 export enum Keys {
@@ -11,5 +11,7 @@ export enum Keys {
 }
 
 export interface CommonProps {
-    children: JSX.Element | JSX.Element[] | string;
+    children: JSX.Element | JSX.Element[] | string | null;
 }
+
+export type SlicedStateProps = {[Keys.badges]: string[]; [Keys.title]: string};

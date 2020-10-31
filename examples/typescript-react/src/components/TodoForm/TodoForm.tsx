@@ -1,14 +1,14 @@
-import React, {Dispatch, SetStateAction, useCallback, useEffect, useRef, useState} from 'react';
+import React, {Dispatch, SetStateAction, useRef, useState} from 'react';
 import Input from 'components/Input/Input';
 import Header from 'components/Header/Header';
 import keyCodes from '../../constants/keyCodes';
 import {separateBadgesAndTask} from './TodoForm.utils';
 import {CommonProps} from 'src/interfaces';
 import useDocumentEvents from 'hooks/useDocumentEvents/useDocumentEvents';
-import {TodosConstants, ActionsWithPayload} from '../../hooks/useTodos/useTodos';
+import {TodosConstants, AddPropsPayLoad} from '../../hooks/useTodos/useTodos.types';
 
 interface TodoFormProps extends CommonProps {
-    taskDispatcher: Dispatch<SetStateAction<ActionsWithPayload>>;
+    taskDispatcher: Dispatch<AddPropsPayLoad>;
 }
 
 function TodoForm({children, taskDispatcher}: TodoFormProps): JSX.Element {
@@ -25,7 +25,10 @@ function TodoForm({children, taskDispatcher}: TodoFormProps): JSX.Element {
         if (text.length) {
             const processedText = separateBadgesAndTask(text);
             if (processedText) {
-                taskDispatcher({type: TodosConstants.ADD_TASK, payload: processedText});
+                taskDispatcher({
+                    type: TodosConstants.ADD_TASK,
+                    payload: processedText
+                });
                 setTask('');
             }
         }

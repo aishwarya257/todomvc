@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'development';
 const WebpackDevServer = require('webpack-dev-server');
 const Webpack = require('webpack');
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
@@ -5,6 +6,7 @@ const HOST = '0.0.0.0';
 const webpackConfig = require('../config/webpack.config.js');
 const {appPublic} = require('../config/paths.js');
 const compiler = Webpack(webpackConfig('development'));
+
 const devServerOptions = Object.assign(
     {},
     {

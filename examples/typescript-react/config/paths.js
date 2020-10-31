@@ -7,7 +7,7 @@ module.exports = {
     rootDir: path.resolve(appDirectory + '/src'),
     rootFile: path.resolve(appDirectory + '/src/index.tsx'),
     appHTML: path.resolve(appDirectory + '/public/index.html'),
-    outputDir: path.resolve(appDirectory + '/build'),
+    appBuild: path.resolve(appDirectory + '/build'),
     appPublic: path.resolve(appDirectory + '/public'),
     extensions: ['.ts', '.tsx', '.js'],
     nodeModules: path.resolve(appDirectory + '/node_modules')

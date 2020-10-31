@@ -15,3 +15,6 @@ export const getFilteredTodos = (currentlyViewing: string, todos: Array<ITodo>):
         }
     });
 };
+
+export const getTotalCount = (todos: Array<ITodo> = []): number =>
+    todos.reduce((sum, {completed}) => (completed ? sum : sum + 1), 0);

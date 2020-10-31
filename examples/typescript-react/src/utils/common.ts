@@ -3,7 +3,7 @@ const common = {
         if (!count || !word) {
             return '';
         }
-        return count === 1 ? word : word + 's';
+        return ' ' + (count === 1 ? word : word + 's');
     },
     removeDuplicates(array: Array<string>): Array<string> {
         if (!array || !array.length) {

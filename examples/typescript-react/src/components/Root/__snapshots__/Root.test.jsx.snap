@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test Root component Snapshot test 1`] = `
+<div>
+  <header
+    class="header"
+  >
+    <h1>
+      todos
+    </h1>
+    <input
+      class="new-todo"
+      placeholder="What needs to be done?"
+      value=""
+    />
+    <section
+      class="main"
+    >
+      <input
+        checked=""
+        class="toggle-all"
+        id="toggle-all"
+        type="checkbox"
+      />
+      <label
+        for="toggle-all"
+      >
+        Mark all as complete
+      </label>
+    </section>
+  </header>
+  <ul
+    class="todo-list"
+  >
+    <li
+      class=""
+    >
+      <div
+        class="view"
+      >
+        <input
+          class="toggle"
+          type="checkbox"
+        />
+        <label>
+          <span>
+             
+            Title 1
+             
+          </span>
+          <span
+            class="badge"
+            title="Hey"
+          >
+            Hey
+          </span>
+        </label>
+        <button
+          aria-label="remove"
+          class="destroy"
+        >
+           
+           
+        </button>
+      </div>
+    </li>
+    <li
+      class="completed"
+    >
+      <div
+        class="view"
+      >
+        <input
+          checked=""
+          class="toggle"
+          type="checkbox"
+        />
+        <label>
+          <span>
+             
+            Title 2
+             
+          </span>
+          <span
+            class="badge"
+            title="Hi"
+          >
+            Hi
+          </span>
+        </label>
+        <button
+          aria-label="remove"
+          class="destroy"
+        >
+           
+           
+        </button>
+      </div>
+    </li>
+  </ul>
+  <footer
+    class="footer"
+  >
+    <span
+      class="todo-count"
+    >
+      <strong>
+        1
+      </strong>
+       item left
+    </span>
+    <ul
+      class="filters"
+    >
+      <li>
+        <a
+          class="selected"
+          href="/"
+        >
+          All
+        </a>
+      </li>
+      <li>
+        <a
+          class=""
+          href="/active"
+        >
+          Active
+        </a>
+      </li>
+      <li>
+        <a
+          class=""
+          href="/completed"
+        >
+          Completed
+        </a>
+      </li>
+    </ul>
+    <button
+      class="clear-completed"
+    >
+       
+      Clear completed
+       
+    </button>
+  </footer>
+</div>
+`;
