@@ -3,20 +3,19 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const {TsconfigPathsPlugin} = require('tsconfig-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-const {rootFile, appBuild, extensions, appHTML} = require('./paths.js');
+const {rootFile, appBuild, extensions, appHTML, staticJs} = require('./paths.js');
 
 module.exports = (env) => {
     const isEnvProduction = env === 'production';
     return {
         entry: rootFile,
-        devtool: isEnvProduction ? false : 'inline-source-map',
+        devtool: isEnvProduction ? false : 'eval-cheap-module-source-map',
         mode: env,
         output: {
             path: appBuild,
-            filename: 'static/js/' + (isEnvProduction ? '[name].[contenthash:8].js' : '[name].js'),
+            filename: staticJs + (isEnvProduction ? '[name].[contenthash:8].js' : '[name].js'),
             chunkFilename:
-                'static/js/' +
-                (isEnvProduction ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js')
+                staticJs + (isEnvProduction ? '[name].[contenthash:8].chunk.js' : '[name].chunk.js')
         },
         resolve: {
             extensions,

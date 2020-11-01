@@ -28,9 +28,8 @@ export default function TodoItem({todo, setTodos}: TodoItemProps): JSX.Element |
     const [editing, setEditing] = useState<boolean>(false);
     const [todoState, setTodoState] = useState<ITodo>(todo);
 
-    const requiredKeys = useRef(task.editableFields);
     const currentLiRef = useRef<HTMLLIElement>(null);
-    const slicedState = useSlicedState(todoState, requiredKeys.current);
+    const slicedState = useSlicedState(todoState, task.editableFields);
     const {editFields, setEditFields, inputRefs, getValues} = useEditingField(slicedState);
     const commit = useRef(false);
 
@@ -121,7 +120,7 @@ export default function TodoItem({todo, setTodos}: TodoItemProps): JSX.Element |
                 <Button
                     className="destroy"
                     label="remove"
-                    onClick={() => {
+                    onClick={(e) => {
                         commit.current = true;
                         updateTodoList({type: REMOVE_TASK, payload: todoState});
                     }}

@@ -10,5 +10,6 @@ module.exports = {
     appBuild: path.resolve(appDirectory + '/build'),
     appPublic: path.resolve(appDirectory + '/public'),
     extensions: ['.ts', '.tsx', '.js'],
+    staticJs: 'static/js',
     nodeModules: path.resolve(appDirectory + '/node_modules')
 };
